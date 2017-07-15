@@ -12,6 +12,7 @@ class GeneratorField
     public $htmlInput;
     public $htmlType;
     public $fieldType;
+    public $default;
 
     /** @var array */
     public $htmlValues;
@@ -118,6 +119,15 @@ class GeneratorField
                 $this->migrationText .= ')';
             }
         }
+        
+        // create index for field
+        if ($this->inIndex) {
+            $this->migrationText .= '->index()';
+        }
+        // set default field value
+        if (!is_null($this->default)) {
+            $this->migrationText .= '->default(' . (string)$this->default . ')';
+        }
 
         $this->migrationText .= ';';
     }
@@ -134,6 +144,7 @@ class GeneratorField
         $field->isPrimary = isset($fieldInput['primary']) ? $fieldInput['primary'] : false;
         $field->inForm = isset($fieldInput['inForm']) ? $fieldInput['inForm'] : true;
         $field->inIndex = isset($fieldInput['inIndex']) ? $fieldInput['inIndex'] : true;
+        $field->default = isset($fieldInput['default']) ? $fieldInput['default'] : null;
 
         return $field;
     }

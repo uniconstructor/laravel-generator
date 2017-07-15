@@ -74,11 +74,21 @@ class MigrationGenerator extends BaseGenerator
                 $fields[] = $updatedAtField->migrationText;
             }
         }
-
-        if ($this->commandData->getOption('softDelete')) {
-            $fields[] = '$table->softDeletes();';
+        
+        // create timestamp indexes if needed
+        if ($createdAtField->inIndex) {
+            $fields[] = '$table->index("' . $createdAtField->name . '");';
+        }
+        if ($updatedAtField->inIndex) {
+            $fields[] = '$table->index("' . $updatedAtField->name . '");';
         }
 
+        if ($this->commandData->getOption('softDelete')) {
+            $deletedAtColumn = config('infyom.laravel_generator.timestamps.deleted_at');
+            $fields[] = '$table->softDeletes();';
+            $fields[] = '$table->index("' . $deletedAtColumn . '");';
+        }
+        
         return implode(infy_nl_tab(1, 3), array_merge($fields, $foreignKeys));
     }
 
