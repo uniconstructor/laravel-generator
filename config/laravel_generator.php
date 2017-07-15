@@ -111,6 +111,8 @@ return [
         'softDelete' => true,
 
         'tables_searchable_default' => false,
+        
+        'generate_api_relations' => true,
     ],
 
     /*
